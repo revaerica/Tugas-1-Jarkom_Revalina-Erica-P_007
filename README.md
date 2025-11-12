@@ -1,7 +1,7 @@
 # Tugas-1-Jarkom_Revalina-Erica-P_007
 
 ## Visualisasi
-<img width="1003" height="599" alt="image" src="https://github.com/user-attachments/assets/33839988-a360-48f9-a004-e2a619166596" />
+<img width="957" height="584" alt="image" src="https://github.com/user-attachments/assets/a8a3a9b5-355a-4142-8cf0-d8e8ec0dce78" />
 
 ## Kofigurasi Router
 **R1**
