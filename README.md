@@ -117,6 +117,33 @@ end
 write memory
 ```
 
+**Switch 6**
+```
+enable
+configure terminal
+
+! VLAN untuk Server & Admin
+vlan 60
+ name SERVER_ADMIN
+exit
+
+! Port ke Server
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 60
+ no shutdown
+exit
+
+! Port ke Router1 (trunk)
+interface FastEthernet0/24
+ switchport mode trunk
+ no shutdown
+exit
+
+end
+write memory
+```
+
 ---
 
 ## **IP PC**
@@ -132,4 +159,4 @@ write memory
 
 ---
 
-## 
+## Hasil akhir
