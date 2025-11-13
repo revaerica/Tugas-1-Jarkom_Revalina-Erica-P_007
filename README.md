@@ -84,7 +84,7 @@ write memory
 
 ---
 
-## **IP PC**
+## **IP Unit**
 
 | Unit                | Device      | IP Address    | Subnet Mask       | Default Gateway |
 | :------------------ | :---------- | :------------ | :---------------- | :-------------- |
