@@ -108,3 +108,4 @@ write memory
 - `ping 10.47.4.2`    (ke server)
 - `ping 10.47.3.226`  (ke PC cabang)
 
+**PC Pengawas Cabang**
