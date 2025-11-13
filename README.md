@@ -1,52 +1,72 @@
 # Tugas-1-Jarkom_Revalina-Erica-P_007
 
 ## Visualisasi
-<img width="957" height="584" alt="image" src="https://github.com/user-attachments/assets/a8a3a9b5-355a-4142-8cf0-d8e8ec0dce78" />
+
+<img width="1067" height="682" alt="image" src="https://github.com/user-attachments/assets/915fb5a6-ac65-493b-be1e-c40557aed541" />
 
 ## Kofigurasi Router
+
 **R1**
 ```
 enable
 configure terminal
 hostname Router1
 
-! LAN Guru & Tendik
+! Aktifkan port ke Switch Core (Router-on-a-Stick)
 interface FastEthernet0/3/0
- description To-SW3-GuruTendik
+ no shutdown
+exit
+
+! Subinterface VLAN Sekretariat
+interface FastEthernet0/3/0.10
+ encapsulation dot1Q 10
+ ip address 10.47.0.1 255.255.254.0
+no shutdown
+exit
+
+! Subinterface VLAN Kurikulum
+interface FastEthernet0/3/0.20
+ encapsulation dot1Q 20
+ ip address 10.47.2.1 255.255.255.0
+ no shutdown
+exit
+
+! Subinterface VLAN Guru & Tendik
+interface FastEthernet0/3/0.30
+ encapsulation dot1Q 30
  ip address 10.47.3.1 255.255.255.128
  no shutdown
 exit
 
-! LAN Sarpras
-interface FastEthernet0/3/1
- description To-SW4-Sarpras
+! Subinterface VLAN Sarpras
+interface FastEthernet0/3/0.40
+ encapsulation dot1Q 40
  ip address 10.47.3.129 255.255.255.192
  no shutdown
 exit
 
-! LAN Pengawas Pusat
-interface FastEthernet0/3/2
- description To-SW5-PengawasPusat
+! Subinterface VLAN Pengawas Pusat
+interface FastEthernet0/3/0.50
+ encapsulation dot1Q 50
  ip address 10.47.3.193 255.255.255.224
  no shutdown
 exit
 
-! LAN Server & Admin
-interface FastEthernet0/3/3
- description To-SW6-ServerAdmin
+! Subinterface VLAN Server & Admin
+interface FastEthernet0/3/0.60
+ encapsulation dot1Q 60
  ip address 10.47.4.1 255.255.255.248
  no shutdown
 exit
 
-! Serial Link ke Router2
+! Serial link ke Router2 (Cabang)
 interface Serial0/2/0
- description To-Router2
  ip address 10.47.4.9 255.255.255.252
  clock rate 64000
  no shutdown
 exit
 
-! Routing statik ke cabang
+! Routing ke Cabang (Pengawas Cabang)
 ip route 10.47.3.224 255.255.255.224 10.47.4.10
 
 end
@@ -55,10 +75,15 @@ write memory
 
 **R2**
 ```
-! Masuk ke mode konfigurasi
 enable
 configure terminal
 hostname Router2
+
+! LAN Pengawas Cabang
+interface FastEthernet0/1
+ ip address 10.47.3.225 255.255.255.224
+ no shutdown
+exit
 
 ! --- Serial link ke Router1 (pastikan sisi R1 sudah 10.47.4.9 dan diberi clock rate)
 interface Serial0/2/0
@@ -80,6 +105,191 @@ ip route 10.47.0.0 255.255.248.0 10.47.4.9
 
 end
 write memory
+```
+
+**Switch Core**
+```
+enable
+configure terminal
+hostname SW-Core
+
+! ==== VLAN Definition ====
+vlan 10
+ name Sekretariat
+vlan 20
+ name Kurikulum
+vlan 30
+ name GuruTendik
+vlan 40
+ name Sarpras
+vlan 50
+ name PengawasPusat
+vlan 60
+ name ServerAdmin
+exit
+
+! ==== Trunk ke Router1 ====
+interface FastEthernet0/1
+ description To-Router1
+ switchport mode trunk
+ switchport trunk allowed vlan 10,20,30,40,50,60
+ no shutdown
+exit
+
+! ==== Access ke masing-masing switch ====
+interface FastEthernet0/2
+ description To-SW1-Sekretariat
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+exit
+
+interface FastEthernet0/3
+ description To-SW2-Kurikulum
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+
+interface FastEthernet0/4
+ description To-SW3-GuruTendik
+ switchport mode access
+ switchport access vlan 30
+ no shutdown
+exit
+
+interface FastEthernet0/5
+ description To-SW4-Sarpras
+ switchport mode access
+ switchport access vlan 40
+ no shutdown
+exit
+
+interface FastEthernet0/6
+ description To-SW5-PengawasPusat
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+exit
+
+interface FastEthernet0/7
+ description To-SW6-ServerAdmin
+ switchport mode access
+ switchport access vlan 60
+ no shutdown
+exit
+
+end
+write memory
+```
+
+**Switch 1**
+```
+enable
+configure terminal
+hostname SW-Sekretariat
+
+! Hubungan ke Core
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+exit
+
+! Hubungan ke PC
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 10
+ no shutdown
+exit
+
+end
+write memory
+```
+
+**Switch 2**
+```
+enable
+configure terminal
+hostname SW-Kurikulum
+
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 20
+ no shutdown
+exit
+end
+write memory
+```
+
+**Switch 3**
+```
+enable
+configure terminal
+hostname SW-GuruTendik
+
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 30
+ no shutdown
+exit
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 30
+ no shutdown
+exit
+end
+write memory
+```
+
+**Switch 4**
+```
+enable
+configure terminal
+hostname SW-Sarpras
+
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 40
+ no shutdown
+exit
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 40
+ no shutdown
+exit
+end
+write memory
+```
+
+**Switch 5**
+```
+enable
+configure terminal
+hostname SW-PengawasPusat
+
+interface FastEthernet0/1
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+exit
+interface FastEthernet0/2
+ switchport mode access
+ switchport access vlan 50
+ no shutdown
+exit
+end
+write memory
+```
+
+**Switch 6**
+```
+
 ```
 
 ---
