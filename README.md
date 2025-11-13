@@ -312,3 +312,4 @@ write memory
 - `ping 10.47.3.226`  (ke PC cabang)
 
 **PC Pengawas Cabang**
+<img width="1302" height="722" alt="image" src="https://github.com/user-attachments/assets/52392df4-fb24-492b-a201-d99c9ba2adae" />
