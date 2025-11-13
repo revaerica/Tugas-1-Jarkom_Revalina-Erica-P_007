@@ -12,49 +12,49 @@ enable
 configure terminal
 hostname Router1
 
-! Aktifkan port ke Switch Core (Router-on-a-Stick)
-interface FastEthernet0/3/0
+! Hubungkan ke Switch Core lewat Gi0/0
+interface GigabitEthernet0/0
  no ip address
  no shutdown
 exit
 
-! Subinterface VLAN Sekretariat
-interface FastEthernet0/3/0.10
+! Subinterface VLAN 10 - Sekretariat
+interface GigabitEthernet0/0.10
  encapsulation dot1Q 10
  ip address 10.47.0.1 255.255.254.0
-no shutdown
+ no shutdown
 exit
 
-! Subinterface VLAN Kurikulum
-interface FastEthernet0/3/0.20
+! Subinterface VLAN 20 - Kurikulum
+interface GigabitEthernet0/0.20
  encapsulation dot1Q 20
  ip address 10.47.2.1 255.255.255.0
  no shutdown
 exit
 
-! Subinterface VLAN Guru & Tendik
-interface FastEthernet0/3/0.30
+! Subinterface VLAN 30 - Guru & Tendik
+interface GigabitEthernet0/0.30
  encapsulation dot1Q 30
  ip address 10.47.3.1 255.255.255.128
  no shutdown
 exit
 
-! Subinterface VLAN Sarpras
-interface FastEthernet0/3/0.40
+! Subinterface VLAN 40 - Sarpras
+interface GigabitEthernet0/0.40
  encapsulation dot1Q 40
  ip address 10.47.3.129 255.255.255.192
  no shutdown
 exit
 
-! Subinterface VLAN Pengawas Pusat
-interface FastEthernet0/3/0.50
+! Subinterface VLAN 50 - Pengawas Pusat
+interface GigabitEthernet0/0.50
  encapsulation dot1Q 50
  ip address 10.47.3.193 255.255.255.224
  no shutdown
 exit
 
-! Subinterface VLAN Server & Admin
-interface FastEthernet0/3/0.60
+! Subinterface VLAN 60 - Server & Admin
+interface GigabitEthernet0/0.60
  encapsulation dot1Q 60
  ip address 10.47.4.1 255.255.255.248
  no shutdown
@@ -80,28 +80,21 @@ enable
 configure terminal
 hostname Router2
 
-! LAN Pengawas Cabang
-interface FastEthernet0/1
- ip address 10.47.3.225 255.255.255.224
- no shutdown
-exit
-
-! --- Serial link ke Router1 (pastikan sisi R1 sudah 10.47.4.9 dan diberi clock rate)
-interface Serial0/2/0
- description Link-to-Router1
- ip address 10.47.4.10 255.255.255.252
- no shutdown
-exit
-
-! --- LAN Pengawas Cabang ke Switch7
+! === Link ke Switch7 (LAN Pengawas Cabang) ===
 interface GigabitEthernet0/0
  description To-SW7-PengawasCabang
  ip address 10.47.3.225 255.255.255.224
  no shutdown
 exit
 
-! --- optional: jika ada interface gigabit lain jangan pakai sekarang
-! --- Tambah routing statik kembali ke pusat (agregat /21)
+! === Serial link ke Router1 ===
+interface Serial0/2/0
+ description Link-to-Router1
+ ip address 10.47.4.10 255.255.255.252
+ no shutdown
+exit
+
+! === Routing balik ke jaringan pusat (supernet /21) ===
 ip route 10.47.0.0 255.255.248.0 10.47.4.9
 
 end
@@ -129,15 +122,16 @@ vlan 60
  name ServerAdmin
 exit
 
-! ==== Trunk ke Router1 ====
+! ==== Trunk ke Router1 (ke Gi0/0) ====
 interface FastEthernet0/1
- description To-Router1
+ description Trunk-to-Router1-Gi0/0
  switchport mode trunk
+ switchport trunk encapsulation dot1q
  switchport trunk allowed vlan 10,20,30,40,50,60
  no shutdown
 exit
 
-! ==== Access ke masing-masing switch ====
+! ==== Access links ke masing-masing switch ====
 interface FastEthernet0/2
  description To-SW1-Sekretariat
  switchport mode access
