@@ -14,6 +14,7 @@ hostname Router1
 
 ! Aktifkan port ke Switch Core (Router-on-a-Stick)
 interface FastEthernet0/3/0
+ no ip address
  no shutdown
 exit
 
