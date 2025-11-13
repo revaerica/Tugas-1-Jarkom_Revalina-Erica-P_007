@@ -99,3 +99,12 @@ write memory
 ---
 
 ## Hasil akhir
+
+**PC Sekretariat**
+
+<img width="1230" height="1066" alt="image" src="https://github.com/user-attachments/assets/a05cf4af-3191-4deb-9060-f790d751175a" />
+
+- `ping 10.47.0.1`    (ke router1 gateway)
+- `ping 10.47.4.2`    (ke server)
+- `ping 10.47.3.226`  (ke PC cabang)
+
