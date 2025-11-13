@@ -198,11 +198,8 @@ write memory
 
 **PC Sekretariat**
 
-<img width="1230" height="1066" alt="image" src="https://github.com/user-attachments/assets/a05cf4af-3191-4deb-9060-f790d751175a" />
-
-- `ping 10.47.0.1`    (ke router1 gateway)
-- `ping 10.47.4.2`    (ke server)
-- `ping 10.47.3.226`  (ke PC cabang)
+<img width="1230" height="505" alt="Screenshot 2025-11-13 074326" src="https://github.com/user-attachments/assets/88aaa3fc-9f17-4afb-9c8b-6139daa6dd4e" />
 
 **PC Pengawas Cabang**
+
 <img width="1302" height="722" alt="image" src="https://github.com/user-attachments/assets/52392df4-fb24-492b-a201-d99c9ba2adae" />
