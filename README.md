@@ -123,7 +123,7 @@ vlan 60
 exit
 
 ! ==== Trunk ke Router1 (ke Gi0/0) ====
-interface FastEthernet0/1
+interface GigabitEthernet0/1
  description Trunk-to-Router1-Gi0/0
  switchport mode trunk
  switchport trunk encapsulation dot1q
@@ -184,15 +184,15 @@ enable
 configure terminal
 hostname SW-Sekretariat
 
-! Hubungan ke Core
 interface FastEthernet0/1
+ description Link-to-Core
  switchport mode access
  switchport access vlan 10
  no shutdown
 exit
 
-! Hubungan ke PC
 interface FastEthernet0/2
+ description PC-Sekretariat
  switchport mode access
  switchport access vlan 10
  no shutdown
@@ -283,8 +283,6 @@ write memory
 ```
 
 **Switch 6**
-```
-
 ```
 
 ---
