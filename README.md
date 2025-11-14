@@ -2,101 +2,191 @@
 
 ## Visualisasi
 
-<img width="1067" height="682" alt="image" src="https://github.com/user-attachments/assets/915fb5a6-ac65-493b-be1e-c40557aed541" />
+<img width="1358" height="597" alt="image" src="https://github.com/user-attachments/assets/7d716920-afa3-4761-a670-0bbac02a84ca" />
 
 ## Kofigurasi Router
 
-**R1**
+**Route 1 (Route Pusat)**
 ```
 enable
-configure terminal
+conf t
 hostname Router1
 
-! Hubungkan ke Switch Core lewat Gi0/0
-interface GigabitEthernet0/0
- no ip address
+interface gigabitEthernet0/0
+ ip address 10.47.5.1 255.255.255.0
  no shutdown
-exit
 
-! Subinterface VLAN 10 - Sekretariat
-interface GigabitEthernet0/0.10
- encapsulation dot1Q 10
- ip address 10.47.0.1 255.255.254.0
- no shutdown
-exit
-
-! Subinterface VLAN 20 - Kurikulum
-interface GigabitEthernet0/0.20
- encapsulation dot1Q 20
- ip address 10.47.2.1 255.255.255.0
- no shutdown
-exit
-
-! Subinterface VLAN 30 - Guru & Tendik
-interface GigabitEthernet0/0.30
- encapsulation dot1Q 30
- ip address 10.47.3.1 255.255.255.128
- no shutdown
-exit
-
-! Subinterface VLAN 40 - Sarpras
-interface GigabitEthernet0/0.40
- encapsulation dot1Q 40
- ip address 10.47.3.129 255.255.255.192
- no shutdown
-exit
-
-! Subinterface VLAN 50 - Pengawas Pusat
-interface GigabitEthernet0/0.50
- encapsulation dot1Q 50
- ip address 10.47.3.193 255.255.255.224
- no shutdown
-exit
-
-! Subinterface VLAN 60 - Server & Admin
-interface GigabitEthernet0/0.60
- encapsulation dot1Q 60
- ip address 10.47.4.1 255.255.255.248
- no shutdown
-exit
-
-! Serial link ke Router2 (Cabang)
-interface Serial0/2/0
+interface serial0/2/0
  ip address 10.47.4.9 255.255.255.252
  clock rate 64000
  no shutdown
-exit
 
-! Routing ke Cabang (Pengawas Cabang)
-ip route 10.47.3.224 255.255.255.224 10.47.4.10
-
+router rip
+ version 2
+ no auto-summary
+ network 10.47.5.0
+ network 10.47.4.8
 end
 write memory
 ```
 
-**R2**
+**Route 2 (Route Cabang)**
 ```
 enable
-configure terminal
+conf t
 hostname Router2
 
-! === Link ke Switch7 (LAN Pengawas Cabang) ===
-interface GigabitEthernet0/0
- description To-SW7-PengawasCabang
+interface gigabitEthernet0/0
  ip address 10.47.3.225 255.255.255.224
  no shutdown
-exit
 
-! === Serial link ke Router1 ===
-interface Serial0/2/0
- description Link-to-Router1
+interface serial0/2/0
  ip address 10.47.4.10 255.255.255.252
  no shutdown
-exit
 
-! === Routing balik ke jaringan pusat (supernet /21) ===
-ip route 10.47.0.0 255.255.248.0 10.47.4.9
+router rip
+ version 2
+ no auto-summary
+ network 10.47.3.224
+ network 10.47.4.8
+end
+write memory
+```
 
+**Route 0 (Sekretariat)**
+```
+enable
+conf t
+hostname Router0
+
+interface gigabitEthernet0/0
+ ip address 10.47.0.1 255.255.254.0
+ no shutdown
+
+interface gigabitEthernet0/1
+ ip address 10.47.5.2 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.47.0.0
+ network 10.47.5.0
+end
+write memory
+```
+
+**Route 3 (Kurikulum)**
+```
+enable
+conf t
+hostname Router3
+
+interface gigabitEthernet0/0
+ ip address 10.47.2.1 255.255.255.0
+ no shutdown
+
+interface gigabitEthernet0/1
+ ip address 10.47.5.3 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.47.2.0
+ network 10.47.5.0
+end
+write memory
+```
+
+**Route 4 (Guru & Tendik)**
+```
+enable
+conf t
+hostname Router4
+
+interface gigabitEthernet0/0
+ ip address 10.47.3.1 255.255.255.128
+ no shutdown
+
+interface gigabitEthernet0/1
+ ip address 10.47.5.4 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.47.3.0
+ network 10.47.5.0
+end
+write memory
+```
+
+**Route 5 (SarPras)**
+```
+enable
+conf t
+hostname Router5
+
+interface gigabitEthernet0/0
+ ip address 10.47.3.129 255.255.255.192
+ no shutdown
+
+interface gigabitEthernet0/1
+ ip address 10.47.5.5 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.47.3.128
+ network 10.47.5.0
+end
+write memory
+```
+
+**Route 6 (Pengawas Pusat)**
+```
+enable
+conf t
+hostname Router6
+
+interface gigabitEthernet0/0
+ ip address 10.47.3.193 255.255.255.224
+ no shutdown
+
+interface gigabitEthernet0/1
+ ip address 10.47.5.6 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.47.3.192
+ network 10.47.5.0
+end
+write memory
+```
+
+**Route 7 (Server & Admin)**
+```
+enable
+conf t
+hostname Router7
+
+interface gigabitEthernet0/0
+ ip address 10.47.4.1 255.255.255.248
+ no shutdown
+
+interface gigabitEthernet0/1
+ ip address 10.47.5.7 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.47.4.0
+ network 10.47.5.0
 end
 write memory
 ```
@@ -104,76 +194,16 @@ write memory
 **Switch Core**
 ```
 enable
-configure terminal
-hostname SW-Core
+conf t
+hostname Switch-Core
 
-! ==== VLAN Definition ====
-vlan 10
- name Sekretariat
-vlan 20
- name Kurikulum
-vlan 30
- name GuruTendik
-vlan 40
- name Sarpras
-vlan 50
- name PengawasPusat
-vlan 60
- name ServerAdmin
-exit
-
-! ==== Trunk ke Router1 (ke Gi0/0) ====
-interface GigabitEthernet0/1
- description Trunk-to-Router1-Gi0/0
- switchport mode trunk
- switchport trunk encapsulation dot1q
- switchport trunk allowed vlan 10,20,30,40,50,60
+interface vlan 1
+ ip address 10.47.5.100 255.255.255.0
  no shutdown
-exit
 
-! ==== Access links ke masing-masing switch ====
-interface FastEthernet0/2
- description To-SW1-Sekretariat
+interface range fa0/1 - 24
  switchport mode access
- switchport access vlan 10
  no shutdown
-exit
-
-interface FastEthernet0/3
- description To-SW2-Kurikulum
- switchport mode access
- switchport access vlan 20
- no shutdown
-exit
-
-interface FastEthernet0/4
- description To-SW3-GuruTendik
- switchport mode access
- switchport access vlan 30
- no shutdown
-exit
-
-interface FastEthernet0/5
- description To-SW4-Sarpras
- switchport mode access
- switchport access vlan 40
- no shutdown
-exit
-
-interface FastEthernet0/6
- description To-SW5-PengawasPusat
- switchport mode access
- switchport access vlan 50
- no shutdown
-exit
-
-interface FastEthernet0/7
- description To-SW6-ServerAdmin
- switchport mode access
- switchport access vlan 60
- no shutdown
-exit
-
 end
 write memory
 ```
