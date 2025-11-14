@@ -204,13 +204,19 @@ enable
 conf t
 hostname Switch-Core
 
-! Semua port ke router = access mode
-interface range fa0/1 - 24
+interface range fa0/1 - 8
+ description CONNECT-TO-ROUTERS
  switchport mode access
+ switchport access vlan 1
  no shutdown
 exit
 
-! Management VLAN1 untuk monitoring (opsional)
+interface range fa0/9 - 24
+ description CONNECT-TO-ACCESS-SWITCHES
+ switchport mode trunk
+ no shutdown
+exit
+
 interface vlan 1
  ip address 10.47.5.100 255.255.255.0
  no shutdown
