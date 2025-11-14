@@ -21,10 +21,10 @@ interface serial0/2/0
  clock rate 64000
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
- network 10.47.5.0
  network 10.47.4.8
 end
 write memory
@@ -44,6 +44,7 @@ interface serial0/2/0
  ip address 10.47.4.10 255.255.255.252
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
@@ -67,17 +68,18 @@ interface gigabitEthernet0/1
  ip address 10.47.5.2 255.255.255.0
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.0.0
- network 10.47.5.0
 end
 write memory
 ```
 
 **Route 3 (Kurikulum)**
 ```
+enable
 enable
 conf t
 hostname Router3
@@ -90,11 +92,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.3 255.255.255.0
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.2.0
- network 10.47.5.0
 end
 write memory
 ```
@@ -113,11 +115,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.4 255.255.255.0
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.3.0
- network 10.47.5.0
 end
 write memory
 ```
@@ -136,11 +138,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.5 255.255.255.0
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.3.128
- network 10.47.5.0
 end
 write memory
 ```
@@ -159,11 +161,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.6 255.255.255.0
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.3.192
- network 10.47.5.0
 end
 write memory
 ```
@@ -182,11 +184,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.7 255.255.255.0
  no shutdown
 
+no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.4.0
- network 10.47.5.0
 end
 write memory
 ```
@@ -203,6 +205,7 @@ interface vlan 1
 
 interface range fa0/1 - 24
  switchport mode access
+ switchport access vlan 1
  no shutdown
 end
 write memory
