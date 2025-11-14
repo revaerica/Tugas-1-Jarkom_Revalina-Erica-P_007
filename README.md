@@ -9,30 +9,33 @@
 **Route 1 (Route Pusat)**
 ```
 enable
-conf t
+configure terminal
 hostname Router1
 
-! --- Link ke Router2 (Cabang)
+! serial ke cabang sudah ada: 10.47.4.9/30
 interface serial0/2/0
  ip address 10.47.4.9 255.255.255.252
  clock rate 64000
  no shutdown
+exit
 
-! --- Link ke Switch Core
+! backbone Gig ke Switch-Core sudah ada: 10.47.5.1/24
 interface gigabitEthernet0/0
  ip address 10.47.5.1 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
-no network 10.0.0.0
- network 10.47.4.8
- network 10.47.5.0
- network 10.47.0.0
- network 10.47.2.0
- network 10.47.3.0
- network 10.47.4.0
+! STATIC ROUTES -> tiap LAN pusat (next-hop = IP 10.47.5.x router edge)
+ip route 10.47.0.0 255.255.254.0 10.47.5.2   
+ip route 10.47.2.0 255.255.255.0 10.47.5.3  
+ip route 10.47.3.0 255.255.255.128 10.47.5.4  
+ip route 10.47.3.128 255.255.255.192 10.47.5.5 
+ip route 10.47.3.192 255.255.255.224 10.47.5.6 
+ip route 10.47.4.0 255.255.255.248 10.47.5.7  
+
+! route ke cabang (single static)
+ip route 10.47.3.224 255.255.255.224 10.47.4.10
+
 end
 write memory
 ```
@@ -40,22 +43,22 @@ write memory
 **Route 2 (Route Cabang)**
 ```
 enable
-conf t
+configure terminal
 hostname Router2
 
 interface gigabitEthernet0/0
  ip address 10.47.3.225 255.255.255.224
  no shutdown
+exit
 
 interface serial0/2/0
  ip address 10.47.4.10 255.255.255.252
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.3.224
- network 10.47.4.8
+! supernet route: semua jaringan pusat ada di 10.47.0.0/21
+ip route 10.47.0.0 255.255.248.0 10.47.4.9
+
 end
 write memory
 ```
@@ -63,22 +66,22 @@ write memory
 **Route 0 (Sekretariat)**
 ```
 enable
-conf t
+configure terminal
 hostname Router0
 
 interface gigabitEthernet0/0
  ip address 10.47.0.1 255.255.254.0
  no shutdown
+exit
 
 interface gigabitEthernet0/1
  ip address 10.47.5.2 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.0.0
- network 10.47.5.0
+! default route ke Router1
+ip route 0.0.0.0 0.0.0.0 10.47.5.1
+
 end
 write memory
 ```
@@ -86,22 +89,21 @@ write memory
 **Route 3 (Kurikulum)**
 ```
 enable
-conf t
+configure terminal
 hostname Router3
 
 interface gigabitEthernet0/0
  ip address 10.47.2.1 255.255.255.0
  no shutdown
+exit
 
 interface gigabitEthernet0/1
  ip address 10.47.5.3 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.2.0
- network 10.47.5.0
+ip route 0.0.0.0 0.0.0.0 10.47.5.1
+
 end
 write memory
 ```
@@ -109,22 +111,21 @@ write memory
 **Route 4 (Guru & Tendik)**
 ```
 enable
-conf t
+configure terminal
 hostname Router4
 
 interface gigabitEthernet0/0
  ip address 10.47.3.1 255.255.255.128
  no shutdown
+exit
 
 interface gigabitEthernet0/1
  ip address 10.47.5.4 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.3.0
- network 10.47.5.0
+ip route 0.0.0.0 0.0.0.0 10.47.5.1
+
 end
 write memory
 ```
@@ -132,22 +133,21 @@ write memory
 **Route 5 (SarPras)**
 ```
 enable
-conf t
+configure terminal
 hostname Router5
 
 interface gigabitEthernet0/0
  ip address 10.47.3.129 255.255.255.192
  no shutdown
+exit
 
 interface gigabitEthernet0/1
  ip address 10.47.5.5 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.3.128
- network 10.47.5.0
+ip route 0.0.0.0 0.0.0.0 10.47.5.1
+
 end
 write memory
 ```
@@ -155,22 +155,21 @@ write memory
 **Route 6 (Pengawas Pusat)**
 ```
 enable
-conf t
+configure terminal
 hostname Router6
 
 interface gigabitEthernet0/0
  ip address 10.47.3.193 255.255.255.224
  no shutdown
+exit
 
 interface gigabitEthernet0/1
  ip address 10.47.5.6 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.3.192
- network 10.47.5.0
+ip route 0.0.0.0 0.0.0.0 10.47.5.1
+
 end
 write memory
 ```
@@ -178,22 +177,21 @@ write memory
 **Route 7 (Server & Admin)**
 ```
 enable
-conf t
+configure terminal
 hostname Router7
 
 interface gigabitEthernet0/0
  ip address 10.47.4.1 255.255.255.248
  no shutdown
+exit
 
 interface gigabitEthernet0/1
  ip address 10.47.5.7 255.255.255.0
  no shutdown
+exit
 
-router rip
- version 2
- no auto-summary
- network 10.47.4.0
- network 10.47.5.0
+ip route 0.0.0.0 0.0.0.0 10.47.5.1
+
 end
 write memory
 ```
@@ -205,15 +203,8 @@ conf t
 hostname Switch-Core
 
 interface range fa0/1 - 8
- description CONNECT-TO-ROUTERS
  switchport mode access
  switchport access vlan 1
- no shutdown
-exit
-
-interface range fa0/9 - 24
- description CONNECT-TO-ACCESS-SWITCHES
- switchport mode trunk
  no shutdown
 exit
 
