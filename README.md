@@ -12,20 +12,27 @@ enable
 conf t
 hostname Router1
 
-interface gigabitEthernet0/0
- ip address 10.47.5.1 255.255.255.0
- no shutdown
-
+! --- Link ke Router2 (Cabang)
 interface serial0/2/0
  ip address 10.47.4.9 255.255.255.252
  clock rate 64000
  no shutdown
 
-no router rip
+! --- Link ke Switch Core
+interface gigabitEthernet0/0
+ ip address 10.47.5.1 255.255.255.0
+ no shutdown
+
 router rip
  version 2
  no auto-summary
+no network 10.0.0.0
  network 10.47.4.8
+ network 10.47.5.0
+ network 10.47.0.0
+ network 10.47.2.0
+ network 10.47.3.0
+ network 10.47.4.0
 end
 write memory
 ```
@@ -44,7 +51,6 @@ interface serial0/2/0
  ip address 10.47.4.10 255.255.255.252
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
@@ -68,18 +74,17 @@ interface gigabitEthernet0/1
  ip address 10.47.5.2 255.255.255.0
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.0.0
+ network 10.47.5.0
 end
 write memory
 ```
 
 **Route 3 (Kurikulum)**
 ```
-enable
 enable
 conf t
 hostname Router3
@@ -92,11 +97,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.3 255.255.255.0
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.2.0
+ network 10.47.5.0
 end
 write memory
 ```
@@ -115,11 +120,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.4 255.255.255.0
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.3.0
+ network 10.47.5.0
 end
 write memory
 ```
@@ -138,11 +143,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.5 255.255.255.0
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.3.128
+ network 10.47.5.0
 end
 write memory
 ```
@@ -161,11 +166,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.6 255.255.255.0
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.3.192
+ network 10.47.5.0
 end
 write memory
 ```
@@ -184,11 +189,11 @@ interface gigabitEthernet0/1
  ip address 10.47.5.7 255.255.255.0
  no shutdown
 
-no router rip
 router rip
  version 2
  no auto-summary
  network 10.47.4.0
+ network 10.47.5.0
 end
 write memory
 ```
@@ -199,14 +204,18 @@ enable
 conf t
 hostname Switch-Core
 
+! Semua port ke router = access mode
+interface range fa0/1 - 24
+ switchport mode access
+ no shutdown
+exit
+
+! Management VLAN1 untuk monitoring (opsional)
 interface vlan 1
  ip address 10.47.5.100 255.255.255.0
  no shutdown
+exit
 
-interface range fa0/1 - 24
- switchport mode access
- switchport access vlan 1
- no shutdown
 end
 write memory
 ```
