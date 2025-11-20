@@ -2,7 +2,7 @@
 
 ## Visualisasi
 
-<img width="1214" height="660" alt="image" src="https://github.com/user-attachments/assets/f10f6e3d-99e3-499c-a356-d3773eeadfaa" />
+<img width="1232" height="742" alt="image" src="https://github.com/user-attachments/assets/a95c3cf2-0883-48d6-ad17-49c14b3e2c0d" />
 
 ## Kofigurasi Router
 
