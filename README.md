@@ -11,7 +11,7 @@
 enable
 conf t
 
-interface fa0/0
+interface fa0/1
  ip address 10.47.255.1 255.255.255.0
  no shutdown
 
@@ -20,11 +20,14 @@ interface se2/0
  clock rate 64000
  no shutdown
 
+interface fa0/0
+ ip address 10.47.255.254 255.255.255.0
+ no shutdown
+
 router rip
  version 2
  no auto-summary
- network 10.0.0.0
-
+ network 10.47.0.0
 end
 write
 ```
@@ -34,12 +37,10 @@ write
 enable
 conf t
 
-! LAN Sekretariat
 interface FastEthernet0/0
  ip address 10.47.0.1 255.255.254.0
  no shutdown
 
-! Ke Switch Backbone
 interface FastEthernet1/0
  ip address 10.47.255.11 255.255.255.0
  no shutdown
@@ -193,7 +194,7 @@ write
 ```
 enable
 conf t
-interface range fa0/1 - 24
+interface range fa0/1 - 7
  no shutdown
 end
 write
