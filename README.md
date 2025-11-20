@@ -2,219 +2,201 @@
 
 ## Visualisasi
 
-<img width="1232" height="742" alt="image" src="https://github.com/user-attachments/assets/a95c3cf2-0883-48d6-ad17-49c14b3e2c0d" />
+<img width="1472" height="885" alt="image" src="https://github.com/user-attachments/assets/37a3e4d8-563a-4433-a7ac-fc4ac0c92378" />
 
-## Kofigurasi Router
+## Konfigurasi Route
 
-**Route 1 (Route Pusat)**
-```
-enable
-configure terminal
-hostname Router1
-
-! serial ke cabang sudah ada: 10.47.4.9/30
-interface serial0/2/0
- ip address 10.47.4.9 255.255.255.252
- clock rate 64000
- no shutdown
-exit
-
-! backbone Gig ke Switch-Core sudah ada: 10.47.5.1/24
-interface gigabitEthernet0/0
- ip address 10.47.5.1 255.255.255.0
- no shutdown
-exit
-
-! STATIC ROUTES -> tiap LAN pusat (next-hop = IP 10.47.5.x router edge)
-ip route 10.47.0.0 255.255.254.0 10.47.5.2   
-ip route 10.47.2.0 255.255.255.0 10.47.5.3  
-ip route 10.47.3.0 255.255.255.128 10.47.5.4  
-ip route 10.47.3.128 255.255.255.192 10.47.5.5 
-ip route 10.47.3.192 255.255.255.224 10.47.5.6 
-ip route 10.47.4.0 255.255.255.248 10.47.5.7  
-
-! route ke cabang (single static)
-ip route 10.47.3.224 255.255.255.224 10.47.4.10
-
-end
-write memory
-```
-
-**Route 2 (Route Cabang)**
-```
-enable
-configure terminal
-hostname Router2
-
-interface gigabitEthernet0/0
- ip address 10.47.3.225 255.255.255.224
- no shutdown
-exit
-
-interface serial0/2/0
- ip address 10.47.4.10 255.255.255.252
- no shutdown
-exit
-
-! supernet route: semua jaringan pusat ada di 10.47.0.0/21
-ip route 10.47.0.0 255.255.248.0 10.47.4.9
-
-end
-write memory
-```
-
-**Route 0 (Sekretariat)**
-```
-enable
-configure terminal
-hostname Router0
-
-interface gigabitEthernet0/0
- ip address 10.47.0.1 255.255.254.0
- no shutdown
-exit
-
-interface gigabitEthernet0/1
- ip address 10.47.5.2 255.255.255.0
- no shutdown
-exit
-
-! default route ke Router1
-ip route 0.0.0.0 0.0.0.0 10.47.5.1
-
-end
-write memory
-```
-
-**Route 3 (Kurikulum)**
-```
-enable
-configure terminal
-hostname Router3
-
-interface gigabitEthernet0/0
- ip address 10.47.2.1 255.255.255.0
- no shutdown
-exit
-
-interface gigabitEthernet0/1
- ip address 10.47.5.3 255.255.255.0
- no shutdown
-exit
-
-ip route 0.0.0.0 0.0.0.0 10.47.5.1
-
-end
-write memory
-```
-
-**Route 4 (Guru & Tendik)**
-```
-enable
-configure terminal
-hostname Router4
-
-interface gigabitEthernet0/0
- ip address 10.47.3.1 255.255.255.128
- no shutdown
-exit
-
-interface gigabitEthernet0/1
- ip address 10.47.5.4 255.255.255.0
- no shutdown
-exit
-
-ip route 0.0.0.0 0.0.0.0 10.47.5.1
-
-end
-write memory
-```
-
-**Route 5 (SarPras)**
-```
-enable
-configure terminal
-hostname Router5
-
-interface gigabitEthernet0/0
- ip address 10.47.3.129 255.255.255.192
- no shutdown
-exit
-
-interface gigabitEthernet0/1
- ip address 10.47.5.5 255.255.255.0
- no shutdown
-exit
-
-ip route 0.0.0.0 0.0.0.0 10.47.5.1
-
-end
-write memory
-```
-
-**Route 6 (Pengawas Pusat)**
-```
-enable
-configure terminal
-hostname Router6
-
-interface gigabitEthernet0/0
- ip address 10.47.3.193 255.255.255.224
- no shutdown
-exit
-
-interface gigabitEthernet0/1
- ip address 10.47.5.6 255.255.255.0
- no shutdown
-exit
-
-ip route 0.0.0.0 0.0.0.0 10.47.5.1
-
-end
-write memory
-```
-
-**Route 7 (Server & Admin)**
-```
-enable
-configure terminal
-hostname Router7
-
-interface gigabitEthernet0/0
- ip address 10.47.4.1 255.255.255.248
- no shutdown
-exit
-
-interface gigabitEthernet0/1
- ip address 10.47.5.7 255.255.255.0
- no shutdown
-exit
-
-ip route 0.0.0.0 0.0.0.0 10.47.5.1
-
-end
-write memory
-```
-
-**Switch Core**
+**Route 0 (Pusat)**
 ```
 enable
 conf t
-hostname Switch-Core
 
-interface range fa0/1 - 8
- switchport mode access
- switchport access vlan 1
+interface fa0/0
+ ip address 10.47.255.1 255.255.255.0
  no shutdown
-exit
 
-interface vlan 1
- ip address 10.47.5.100 255.255.255.0
+interface se2/0
+ ip address 10.47.4.9 255.255.255.252
+ clock rate 64000
  no shutdown
-exit
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
 
 end
-write memory
+write
+```
+
+**Route 1**
+```
+enable
+conf t
+
+! LAN Sekretariat
+interface FastEthernet0/0
+ ip address 10.47.0.1 255.255.254.0
+ no shutdown
+
+! Ke Switch Backbone
+interface FastEthernet1/0
+ ip address 10.47.255.11 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Route 2**
+```
+enable
+conf t
+
+interface FastEthernet0/0
+ ip address 10.47.2.1 255.255.255.0
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 10.47.255.12 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Route 3**
+```
+enable
+conf t
+
+interface FastEthernet0/0
+ ip address 10.47.3.1 255.255.255.128
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 10.47.255.13 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Route 4**
+```
+enable
+conf t
+
+interface FastEthernet0/0
+ ip address 10.47.3.129 255.255.255.192
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 10.47.255.14 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Route 5**
+```
+enable
+conf t
+
+interface FastEthernet0/0
+ ip address 10.47.3.193 255.255.255.224
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 10.47.255.15 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Route 6**
+```
+enable
+conf t
+
+interface FastEthernet0/0
+ ip address 10.47.4.1 255.255.255.248
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 10.47.255.16 255.255.255.0
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Route 7**
+```
+enable
+conf t
+
+interface FastEthernet0/0
+ ip address 10.47.3.225 255.255.255.224
+ no shutdown
+
+interface FastEthernet1/0
+ ip address 10.47.255.17 255.255.255.0
+ no shutdown
+
+interface Serial2/0
+ ip address 10.47.4.10 255.255.255.252
+ no shutdown
+
+router rip
+ version 2
+ no auto-summary
+ network 10.0.0.0
+
+end
+write
+```
+
+**Switch 0**
+```
+enable
+conf t
+interface range fa0/1 - 24
+ no shutdown
+end
+write
 ```
 
 ---
