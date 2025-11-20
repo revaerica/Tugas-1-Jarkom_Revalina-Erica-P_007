@@ -16,6 +16,10 @@ interface fa0/1
  no shutdown
 
 interface fa0/0
+ ip address 10.47.255.1 255.255.255.0
+ no shutdown
+
+interface fa1/0
  ip address 10.47.250.1 255.255.255.0
  no shutdown
 
