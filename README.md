@@ -15,19 +15,19 @@ interface fa0/1
  ip address 10.47.255.1 255.255.255.0
  no shutdown
 
+interface fa0/0
+ ip address 10.47.250.1 255.255.255.0
+ no shutdown
+
 interface se2/0
  ip address 10.47.4.9 255.255.255.252
  clock rate 64000
  no shutdown
 
-interface fa0/0
- ip address 10.47.255.254 255.255.255.0
- no shutdown
-
 router rip
  version 2
  no auto-summary
- network 10.47.0.0
+ network 10.0.0.0
 end
 write
 ```
